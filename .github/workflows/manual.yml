@@ -28,14 +28,11 @@ jobs:
       build_status: ${{ steps.android_e2e_results_2.build_status }}
       build_name:  ${{ steps.android_e2e_results_3.build_name }}
     steps:
-      - name: Set E2E Results to Outputs
-        id: android_e2e_results_1
+      - id: android_e2e_results_1
         run: echo "public_url=https://app-automate.browserstack.com/dashboard/v2/builds/09644d36616e6ef50caa2e6aeb16019b651e04e2" >> "$GITHUB_OUTPUT"
-      - name: Set E2E Results to Outputs
-        id: android_e2e_results_2
+      - id: android_e2e_results_2
         run: echo "build_status=PASS" >> "$GITHUB_OUTPUT"
-      - name: Set E2E Results to Outputs
-        id: android_e2e_results_3
+      - id: android_e2e_results_3
         run: echo "build_name='Android E2E CI 10949899604'" >> "$GITHUB_OUTPUT"
   job2:
     runs-on: ubuntu-latest
