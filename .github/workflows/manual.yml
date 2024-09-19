@@ -25,9 +25,9 @@ jobs:
     # Map a step output to a job output
     outputs: # These vars are set in wdio.browderstack.conf.ts
       output1: ${{ steps.step1.outputs.test }}
-      public_url: ${{ steps.android_e2e_results_1.public_url }}
-      build_status: ${{ steps.android_e2e_results_2.build_status }}
-      build_name:  ${{ steps.android_e2e_results_3.build_name }}
+      public_url: ${{ steps.android_e2e_results_1.outputs.public_url }}
+      build_status: ${{ steps.android_e2e_results_2.outputs.build_status }}
+      build_name:  ${{ steps.android_e2e_results_3.outputs.build_name }}
     steps:
       - id: step1
         run: echo "test=hello" >> "$GITHUB_OUTPUT"
