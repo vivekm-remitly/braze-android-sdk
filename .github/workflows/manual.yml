@@ -24,10 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     # Map a step output to a job output
     outputs: # These vars are set in wdio.browderstack.conf.ts
+      output1: ${{ steps.step1.outputs.test }}
       public_url: ${{ steps.android_e2e_results_1.public_url }}
       build_status: ${{ steps.android_e2e_results_2.build_status }}
       build_name:  ${{ steps.android_e2e_results_3.build_name }}
     steps:
+      - id: step1
+        run: echo "test=hello" >> "$GITHUB_OUTPUT"
       - id: android_e2e_results_1
         run: echo "public_url=https://app-automate.browserstack.com/dashboard/v2/builds/09644d36616e6ef50caa2e6aeb16019b651e04e2" >> "$GITHUB_OUTPUT"
       - id: android_e2e_results_2
@@ -42,4 +45,5 @@ jobs:
           OUTPUT1: ${{needs.job1.outputs.status}}
           OUTPUT2: ${{needs.job1.outputs.public_url}}
           OUTPUT3: ${{needs.job1.outputs.build_name}}
-        run: echo "$OUTPUT1 $OUTPUT2 $OUTPUT3"
+          OUTPUT4: ${{needs.job1.outputs.output1}}
+        run: echo "$OUTPUT1 $OUTPUT2 $OUTPUT3 $OUTPUT4"
