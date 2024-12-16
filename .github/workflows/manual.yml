@@ -56,7 +56,13 @@ jobs:
       ${{ (github.event_name == 'workflow_dispatch') && (fromJSON(inputs.should_run_android) == true) && (inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null) }}
     steps:
       - id: step1
-        run: echo "test=hello" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "github.event_name ${{ github.event_name }}"
+          echo "github.event_name == 'workflow_dispatch' ${{ (github.event_name == 'workflow_dispatch') }}"
+          echo "fromJSON(inputs.should_run_android) ${{ fromJSON(inputs.should_run_android) }}"
+          echo "fromJSON(inputs.should_run_android) == true ${{ (fromJSON(inputs.should_run_android) == true) }}"
+          echo "inputs.browserstack_android_app_path ${{ inputs.browserstack_android_app_path }}"
+          echo "(inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null) ${{ (inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null) }}"
   job2:
     runs-on: ubuntu-latest
     if: |
@@ -65,4 +71,10 @@ jobs:
       )
     steps:
       - id: step1
-        run: echo "test=hello" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "github.event_name ${{ github.event_name }}"
+          echo "github.event_name == 'push' ${{ github.event_name == 'push' }}"
+          echo "fromJSON(inputs.should_run_ios) ${{ fromJSON(inputs.should_run_ios) }}"
+          echo "fromJSON(inputs.should_run_ios) == true ${{ (fromJSON(inputs.should_run_ios) == true) }}"
+          echo "inputs.browserstack_android_app_path ${{ inputs.browserstack_android_app_path }}"
+          echo "(inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null) ${{ (inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null) }}"
