@@ -52,29 +52,26 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     # Map a step output to a job output
-    if: |
-      ${{ (github.event_name == 'workflow_dispatch') && (fromJSON(inputs.should_run_android) == true) && (inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null) }}
+    if: ${{ github.event_name == 'workflow_dispatch' && fromJSON(inputs.should_run_android) == true && (inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null) }}
     steps:
       - id: step1
         run: |
           echo "event_name ${{ github.event_name }}"
-          echo "event_name status ${{ (github.event_name == 'workflow_dispatch') }}"
+          echo "event_name status ${{ github.event_name == 'workflow_dispatch' }}"
           echo "should_run_android ${{ fromJSON(inputs.should_run_android) }}"
-          echo "should_run_android status ${{ (fromJSON(inputs.should_run_android) == true) }}"
+          echo "should_run_android status ${{ fromJSON(inputs.should_run_android) == true }}"
           echo "app path ${{ inputs.browserstack_android_app_path }}"
-          echo "app path stauts ${{ (inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null) }}"
+          echo "app path status ${{ inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null }}"
+
   job2:
     runs-on: ubuntu-latest
-    if: |
-      ${{ github.event_name == 'push' }} || (
-        ${{ github.event_name == 'workflow_dispatch' && fromJSON(inputs.should_run_ios) == true && (inputs.browserstack_ios_app_path == '' || inputs.browserstack_ios_app_path == null) }}
-      )
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && fromJSON(inputs.should_run_ios) == true && (inputs.browserstack_ios_app_path == '' || inputs.browserstack_ios_app_path == null)) }}
     steps:
       - id: step1
         run: |
           echo "event_name ${{ github.event_name }}"
-          echo "event_name status ${{ (github.event_name == 'push') }}"
+          echo "event_name status ${{ github.event_name == 'push' }}"
           echo "should_run_android ${{ fromJSON(inputs.should_run_android) }}"
-          echo "should_run_android status ${{ (fromJSON(inputs.should_run_android) == true) }}"
+          echo "should_run_android status ${{ fromJSON(inputs.should_run_android) == true }}"
           echo "app path ${{ inputs.browserstack_android_app_path }}"
-          echo "app path stauts ${{ (inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null) }}"
+          echo "app path status ${{ inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null }}"
