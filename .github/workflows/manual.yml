@@ -6,7 +6,7 @@ name: Manual workflow
 # or API.
 on:
   push:
-    branches: [main, temp/APPX-6129]
+    branches: [master, temp/APPX-6129]
     # paths:
     #   - 'android/**'
     #   - 'e2e/appium/**'
