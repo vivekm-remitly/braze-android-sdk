@@ -79,8 +79,8 @@ jobs:
           
           echo "is_scheduled: $is_scheduled"
           
-          changes_found=${{ needs.check-changes.outputs.should-run == 'true' }}
-
+          # changes_found=${{ needs.check-changes.outputs.should-run == 'true' }}
+          changes_found=false
           echo "changes_found: $changes_found"
           
           scheduled_changes=is_scheduled && changes_found
