@@ -5,20 +5,8 @@ name: Manual workflow
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
 on:
-  push:
-    branches: [master, temp/APPX-6129]
-    # paths:
-    #   - 'android/**'
-    #   - 'e2e/appium/**'
-    #   - 'loc/*'
-    #   - 'native/ios/remitly/**'
-    #   - 'packages/**'
-    #   - '!packages/**/__tests__/**'
-    #   - 'src/**'
-    #   - '!src/**/__tests__/**'
-    #   - 'types/**'
-    #   - 'types-client/**'
-    #   - 'yarn.lock'
+  # schedule:
+  #   - cron: '0 */3 * * *'  # Runs every 3 hours
   workflow_dispatch:
     inputs:
       should_run_android:
@@ -47,31 +35,76 @@ on:
         description: "Test Spec Path"
         required: false
         default: "./test/specs/*"
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  job1:
-    runs-on: ubuntu-latest
-    # Map a step output to a job output
-    if: ${{ github.event_name == 'workflow_dispatch' && fromJSON(inputs.should_run_android) == true && (inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null) }}
-    steps:
-      - id: step1
-        run: |
-          echo "event_name ${{ github.event_name }}"
-          echo "event_name status ${{ github.event_name == 'workflow_dispatch' }}"
-          echo "should_run_android ${{ fromJSON(inputs.should_run_android) }}"
-          echo "should_run_android status ${{ fromJSON(inputs.should_run_android) == true }}"
-          echo "app path ${{ inputs.browserstack_android_app_path }}"
-          echo "app path status ${{ inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null }}"
 
-  job2:
+jobs:
+  jobs_to_run:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && fromJSON(inputs.should_run_ios) == true && (inputs.browserstack_ios_app_path == '' || inputs.browserstack_ios_app_path == null)) }}
+    env:
+      THRESHOLD_TIME: 10800  # 3 hours in seconds
+
+    outputs:
+      build_android: ${{ steps.evaluate_jobs.outputs.build_android }}
+      build_ios: ${{ steps.evaluate_jobs.outputs.build_ios }}
+      run_android: ${{ steps.evaluate_jobs.outputs.run_android }}
+      run_ios: ${{ steps.evaluate_jobs.outputs.run_ios }}
+
     steps:
-      - id: step1
+      - uses: actions/checkout@v4
+        if: ${{ github.event_name == 'schedule' }}
+      - name: Get the latest commit timestamp
+        id: get-commit-time
+        if: ${{ github.event_name == 'schedule' }}
         run: |
-          echo "event_name ${{ github.event_name }}"
-          echo "event_name status ${{ github.event_name == 'push' }}"
-          echo "should_run_android ${{ fromJSON(inputs.should_run_android) }}"
-          echo "should_run_android status ${{ fromJSON(inputs.should_run_android) == true }}"
-          echo "app path ${{ inputs.browserstack_android_app_path }}"
-          echo "app path status ${{ inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null }}"
+          LAST_COMMIT_TIMESTAMP=$(git log -1 --format=%ct)
+          CURRENT_TIMESTAMP=$(date +%s)
+          TIME_DIFF=$((CURRENT_TIMESTAMP - LAST_COMMIT_TIMESTAMP))
+          
+          if [ "$TIME_DIFF" -gt {{ env.THRESHOLD_TIME }} ]; then
+            echo "continue_checks=false" >> $GITHUB_ENV
+            exit 0
+          else
+            OLDEST_COMMIT=$(git log --since="3 hours ago" --reverse --pretty=format:"%H" | head -n 1)
+            echo "continue_checks=true" >> $GITHUB_ENV
+            echo "oldest_commit=${OLDEST_COMMIT}" >> $GITHUB_ENV
+          fi
+      - name: Checks changes requiring E2E
+        if: ${{ env.continue_checks == 'true' }}
+        run: |
+          echo "No changes detected"
+          echo "changes_detected=false" >> "$GITHUB_ENV"
+      - name: Evaluate jobs to execute
+        id: evaluate_jobs
+        run: |
+          scheduled_changes=${{ github.event_name == 'schedule' && needs.check-changes.outputs.should-run == 'true' }}
+          
+          manual_run_android=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_android == 'true'}}
+          manual_run_ios=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_ios == 'true'}}
+
+          android_app_path_empty=$(( inputs.browserstack_android_app_path == '' || inputs.browserstack_android_app_path == null ))
+          ios_app_path_empty=$(( inputs.browserstack_ios_app_path == '' || inputs.browserstack_ios_app_path == null ))
+
+          build_android=$((scheduled_changes || (manual_run_android && android_app_path_empty)))
+          build_ios=$((scheduled_changes || (manual_run_ios && ios_app_path_empty)))
+          
+          run_android=$(( scheduled_changes || manual_run_android ))
+          run_ios=$(( scheduled_changes || manual_run_ios ))
+
+          echo "build_android=$build_android" >> "$GITHUB_ENV"
+          echo "build_ios=$build_ios" >> "$GITHUB_ENV"
+          echo "run_android=$run_android" >> "$GITHUB_ENV"
+          echo "run_ios=$run_ios" >> "$GITHUB_ENV"
+  print_outputs:
+    runs-on: ubuntu-latest
+    needs: jobs_to_run
+    steps:
+      - name: Print outputs
+        run: |
+          echo "build_android: $(( needs.jobs_to_run.outputs.build_android ))"
+          echo "build_ios: $(( needs.jobs_to_run.outputs.build_ios ))"
+          echo "run_android: $(( needs.jobs_to_run.outputs.run_android ))"
+          echo "run_ios: $(( needs.jobs_to_run.outputs.run_ios ))"
+
+          echo "build_android status: $(( needs.jobs_to_run.outputs.build_android == 'true' ))"
+          echo "build_ios status: $(( needs.jobs_to_run.outputs.build_ios == 'true' ))"
+          echo "run_android status: $(( needs.jobs_to_run.outputs.run_android == 'true' ))"
+          echo "run_ios status: $(( needs.jobs_to_run.outputs.run_ios == 'true' ))"
