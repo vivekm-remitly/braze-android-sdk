@@ -75,7 +75,10 @@ jobs:
       - name: Evaluate jobs to execute
         id: evaluate_jobs
         run: |
-          is_scheduled="${{ github.event_name == 'schedule' }}"
+          is_scheduled="${{ github.event_name == 'workflow_dispatch' }}"
+          
+          echo "is_scheduled: $is_scheduled"
+          
           changes_found="${{ needs.check-changes.outputs.should-run == 'true' }}"
           scheduled_changes=$((is_scheduled && changes_found))
 
