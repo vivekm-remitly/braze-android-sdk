@@ -76,8 +76,8 @@ jobs:
         id: evaluate_jobs
         run: |
           is_scheduled="${{ github.event_name == 'schedule' }}"
-          changes_found="${{ needs.check-changes.outputs.should-run }}"
-          scheduled_changes=$((is_scheduled && changes_found == 'true'))
+          changes_found="${{ needs.check-changes.outputs.should-run == 'true' }}"
+          scheduled_changes=$((is_scheduled && changes_found))
 
           echo "scheduled_changes: $scheduled_changes"
           
