@@ -76,35 +76,35 @@ jobs:
         id: evaluate_jobs
         run: |
           scheduled_changes=${{ github.event_name == 'schedule' && needs.check-changes.outputs.should-run == 'true' }}
+          echo "scheduled_changes: $scheduled_changes"
+          # manual_run_android=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_android == 'true'}}
+          # manual_run_ios=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_ios == 'true'}}
+
+          # android_app_path_empty=$(( -z "$(( inputs.browserstack_android_app_path ))" ))
+          # ios_app_path_empty=$(( -z "$(( inputs.browserstack_ios_app_path ))" ))
+
+          # build_android=$((scheduled_changes || (manual_run_android && android_app_path_empty)))
+          # build_ios=$((scheduled_changes || (manual_run_ios && ios_app_path_empty)))
           
-          manual_run_android=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_android == 'true'}}
-          manual_run_ios=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_ios == 'true'}}
+          # run_android=$(( scheduled_changes || manual_run_android ))
+          # run_ios=$(( scheduled_changes || manual_run_ios ))
 
-          android_app_path_empty=$(( -z "$(( inputs.browserstack_android_app_path ))" ))
-          ios_app_path_empty=$(( -z "$(( inputs.browserstack_ios_app_path ))" ))
+          # echo "build_android=$build_android" >> "$GITHUB_ENV"
+          # echo "build_ios=$build_ios" >> "$GITHUB_ENV"
+          # echo "run_android=$run_android" >> "$GITHUB_ENV"
+          # echo "run_ios=$run_ios" >> "$GITHUB_ENV"
+  # print_outputs:
+  #   runs-on: ubuntu-latest
+  #   needs: jobs_to_run
+  #   steps:
+  #     - name: Print outputs
+  #       run: |
+  #         echo "build_android: $(( needs.jobs_to_run.outputs.build_android ))"
+  #         echo "build_ios: $(( needs.jobs_to_run.outputs.build_ios ))"
+  #         echo "run_android: $(( needs.jobs_to_run.outputs.run_android ))"
+  #         echo "run_ios: $(( needs.jobs_to_run.outputs.run_ios ))"
 
-          build_android=$((scheduled_changes || (manual_run_android && android_app_path_empty)))
-          build_ios=$((scheduled_changes || (manual_run_ios && ios_app_path_empty)))
-          
-          run_android=$(( scheduled_changes || manual_run_android ))
-          run_ios=$(( scheduled_changes || manual_run_ios ))
-
-          echo "build_android=$build_android" >> "$GITHUB_ENV"
-          echo "build_ios=$build_ios" >> "$GITHUB_ENV"
-          echo "run_android=$run_android" >> "$GITHUB_ENV"
-          echo "run_ios=$run_ios" >> "$GITHUB_ENV"
-  print_outputs:
-    runs-on: ubuntu-latest
-    needs: jobs_to_run
-    steps:
-      - name: Print outputs
-        run: |
-          echo "build_android: $(( needs.jobs_to_run.outputs.build_android ))"
-          echo "build_ios: $(( needs.jobs_to_run.outputs.build_ios ))"
-          echo "run_android: $(( needs.jobs_to_run.outputs.run_android ))"
-          echo "run_ios: $(( needs.jobs_to_run.outputs.run_ios ))"
-
-          echo "build_android status: $(( needs.jobs_to_run.outputs.build_android == 'true' ))"
-          echo "build_ios status: $(( needs.jobs_to_run.outputs.build_ios == 'true' ))"
-          echo "run_android status: $(( needs.jobs_to_run.outputs.run_android == 'true' ))"
-          echo "run_ios status: $(( needs.jobs_to_run.outputs.run_ios == 'true' ))"
+  #         echo "build_android status: $(( needs.jobs_to_run.outputs.build_android == 'true' ))"
+  #         echo "build_ios status: $(( needs.jobs_to_run.outputs.build_ios == 'true' ))"
+  #         echo "run_android status: $(( needs.jobs_to_run.outputs.run_android == 'true' ))"
+  #         echo "run_ios status: $(( needs.jobs_to_run.outputs.run_ios == 'true' ))"
