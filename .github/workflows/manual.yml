@@ -90,11 +90,11 @@ jobs:
 
           echo "is_manual: $is_manual"
           
-          input_run_android=${{ inputs.should_run_android == 'true' }}
+          input_run_android=${{ inputs.should_run_android == true }}
 
           echo "input_run_android: $input_run_android"
           
-          input_run_ios=${{ inputs.should_run_ios == 'true' }}
+          input_run_ios=${{ inputs.should_run_ios == true }}
 
           echo "input_run_ios: $input_run_ios"
           
