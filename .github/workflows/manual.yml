@@ -87,10 +87,24 @@ jobs:
           echo "scheduled_changes: $scheduled_changes"
           
           is_manual=${{ github.event_name == 'workflow_dispatch' }}
+
+          echo "is_manual: $is_manual"
+          
           input_run_android=${{ inputs.should_run_android == 'true' }}
+
+          echo "input_run_android: $input_run_android"
+          
           input_run_ios=${{ inputs.should_run_ios == 'true' }}
+
+          echo "input_run_ios: $input_run_ios"
+          
           input_android_app_path=${{ inputs.browserstack_android_app_path }}
+
+          echo "input_android_app_path: $input_android_app_path"
+          
           input_ios_app_path=${{ inputs.browserstack_ios_app_path }}
+
+          echo "input_ios_app_path: $input_ios_app_path"
           
           manual_run_android=$((is_manual && input_run_android))
           manual_run_ios=$((is_manual && input_run_ios))
