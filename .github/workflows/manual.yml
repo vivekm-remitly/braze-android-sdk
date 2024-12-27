@@ -106,25 +106,26 @@ jobs:
 
           echo "input_ios_app_path: $input_ios_app_path"
           
-          manual_run_android=$((is_manual && input_run_android))
-          manual_run_ios=$((is_manual && input_run_ios))
+          android_app_path_empty=$([[ $input_ios_app_path == "" ]] && echo 'true' || echo 'false')
+
+          echo "android_app_path_empty: $android_app_path_empty"
+
+          ios_app_path_empty=$([[ $input_ios_app_path == "" ]] && echo 'true' || echo 'false')
+          
+          echo "ios_app_path_empty: $ios_app_path_empty"
+
+          manual_run_android=$([[ $is_manual == true ]] && [[ $input_run_android == true ]]  && echo 'true' || echo 'false')
+          manual_run_ios=$([[ $is_manual == true ]] && [[ $input_run_ios == true ]]  && echo 'true' || echo 'false')
           
           echo "manual_run_android: $manual_run_android"
           echo "manual_run_ios: $manual_run_ios"
 
-          android_app_path_empty=$(( -z "$input_android_app_path" ))
+          build_android=$([[ $scheduled_changes == 'true' ]] || ([[ $manual_run_android == 'true' ]] && [[ $android_app_path_empty == 'true' ]])  && echo 'true' || echo 'false')
+          build_android=$([[ $scheduled_changes == 'true' ]] || ([[ $manual_run_ios == 'true' ]] && [[ $ios_app_path_empty == 'true' ]])  && echo 'true' || echo 'false')
 
-          echo "android_app_path_empty: $android_app_path_empty"
-          ios_app_path_empty=$(( -z "$input_ios_app_path" ))
-
-          echo "ios_app_path_empty: $ios_app_path_empty"
-
-          build_android=$((scheduled_changes || (manual_run_android && android_app_path_empty)))
-          build_ios=$((scheduled_changes || (manual_run_ios && ios_app_path_empty)))
+          run_android=$([[ $scheduled_changes == 'true' ]] && [[ $manual_run_android == 'true' ]]  && echo 'true' || echo 'false')
+          run_ios=$([[ $scheduled_changes == 'true' ]] && [[ $manual_run_ios == 'true' ]]  && echo 'true' || echo 'false')
           
-          run_android=$(( scheduled_changes || manual_run_android ))
-          run_ios=$(( scheduled_changes || manual_run_ios ))
-
           echo "build_android: $build_android"
           echo "build_ios: $build_ios"
           echo "run_android: $run_android"
