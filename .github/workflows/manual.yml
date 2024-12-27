@@ -80,8 +80,8 @@ jobs:
           manual_run_android=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_android == 'true'}}
           manual_run_ios=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_ios == 'true'}}
 
-          android_app_path_empty=$(( -z "${inputs.browserstack_android_app_path}" ))
-          ios_app_path_empty=$(( -z "${inputs.browserstack_ios_app_path}" ))
+          android_app_path_empty=$(( -z "$(( inputs.browserstack_android_app_path ))" ))
+          ios_app_path_empty=$(( -z "$(( inputs.browserstack_ios_app_path ))" ))
 
           build_android=$((scheduled_changes || (manual_run_android && android_app_path_empty)))
           build_ios=$((scheduled_changes || (manual_run_ios && ios_app_path_empty)))
