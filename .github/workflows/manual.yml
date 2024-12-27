@@ -80,15 +80,18 @@ jobs:
           echo "is_scheduled: $is_scheduled"
           
           changes_found=${{ needs.check-changes.outputs.should-run == 'true' }}
-          scheduled_changes=$((is_scheduled && changes_found))
+
+          echo "changes_found: $changes_found"
+          
+          scheduled_changes=is_scheduled && changes_found
 
           echo "scheduled_changes: $scheduled_changes"
           
-          is_manual="${{ github.event_name == 'workflow_dispatch' }}"
-          input_run_android="${{ inputs.should_run_android == 'true' }}"
-          input_run_ios="${{ inputs.should_run_ios == 'true' }}"
-          input_android_app_path="${{ inputs.browserstack_android_app_path }}"
-          input_ios_app_path="${{ inputs.browserstack_ios_app_path }}"
+          is_manual=${{ github.event_name == 'workflow_dispatch' }}
+          input_run_android=${{ inputs.should_run_android == 'true' }}
+          input_run_ios=${{ inputs.should_run_ios == 'true' }}
+          input_android_app_path=${{ inputs.browserstack_android_app_path }}
+          input_ios_app_path=${{ inputs.browserstack_ios_app_path }}
           
           manual_run_android=$((is_manual && input_run_android))
           manual_run_ios=$((is_manual && input_run_ios))
@@ -109,10 +112,10 @@ jobs:
           run_android=$(( scheduled_changes || manual_run_android ))
           run_ios=$(( scheduled_changes || manual_run_ios ))
 
-          echo "build_android=$build_android" >> "$GITHUB_ENV"
-          echo "build_ios=$build_ios" >> "$GITHUB_ENV"
-          echo "run_android=$run_android" >> "$GITHUB_ENV"
-          echo "run_ios=$run_ios" >> "$GITHUB_ENV"
+          echo "build_android=$build_android" >> "$GITHUB_OUTPUT"
+          echo "build_ios=$build_ios" >> "$GITHUB_OUTPUT"
+          echo "run_android=$run_android" >> "$GITHUB_OUTPUT"
+          echo "run_ios=$run_ios" >> "$GITHUB_OUTPUT"
   print_outputs:
     runs-on: ubuntu-latest
     needs: jobs_to_run
