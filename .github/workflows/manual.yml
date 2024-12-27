@@ -82,7 +82,7 @@ jobs:
           changes_found=${{ needs.check-changes.outputs.should-run == 'true' }}
           echo "changes_found: $changes_found"
           
-          scheduled_changes=$(is_scheduled && changes_found)
+          scheduled_changes=$((is_scheduled && changes_found))
 
           echo "scheduled_changes: $scheduled_changes"
           
