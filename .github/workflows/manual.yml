@@ -121,12 +121,12 @@ jobs:
     steps:
       - name: Print outputs
         run: |
-          echo "build_android: $(( needs.jobs_to_run.outputs.build_android ))"
-          echo "build_ios: $(( needs.jobs_to_run.outputs.build_ios ))"
-          echo "run_android: $(( needs.jobs_to_run.outputs.run_android ))"
-          echo "run_ios: $(( needs.jobs_to_run.outputs.run_ios ))"
+          echo "build_android: ${{ needs.jobs_to_run.outputs.build_android }}"
+          echo "build_ios: ${{ needs.jobs_to_run.outputs.build_ios }}"
+          echo "run_android: ${{ needs.jobs_to_run.outputs.run_android }}"
+          echo "run_ios: ${{ needs.jobs_to_run.outputs.run_ios }}"
 
-          echo "build_android status: $(( needs.jobs_to_run.outputs.build_android == 'true' ))"
-          echo "build_ios status: $(( needs.jobs_to_run.outputs.build_ios == 'true' ))"
-          echo "run_android status: $(( needs.jobs_to_run.outputs.run_android == 'true' ))"
-          echo "run_ios status: $(( needs.jobs_to_run.outputs.run_ios == 'true' ))"
+          echo "build_android status: ${{ needs.jobs_to_run.outputs.build_android == 'true' }}"
+          echo "build_ios status: ${{ needs.jobs_to_run.outputs.build_ios == 'true' }}"
+          echo "run_android status: ${{ needs.jobs_to_run.outputs.run_android == 'true' }}"
+          echo "run_ios status: ${{ needs.jobs_to_run.outputs.run_ios == 'true' }}"
