@@ -111,6 +111,11 @@ jobs:
           run_android=$(( scheduled_changes || manual_run_android ))
           run_ios=$(( scheduled_changes || manual_run_ios ))
 
+          echo "build_android: build_android"
+          echo "build_ios: build_ios"
+          echo "run_android: run_android"
+          echo "run_ios: run_ios"
+
           echo "build_android=$build_android" >> "$GITHUB_OUTPUT"
           echo "build_ios=$build_ios" >> "$GITHUB_OUTPUT"
           echo "run_android=$run_android" >> "$GITHUB_OUTPUT"
