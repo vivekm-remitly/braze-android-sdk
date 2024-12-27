@@ -77,11 +77,17 @@ jobs:
         run: |
           scheduled_changes=${{ github.event_name == 'schedule' && needs.check-changes.outputs.should-run == 'true' }}
           echo "scheduled_changes: $scheduled_changes"
-          # manual_run_android=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_android == 'true'}}
-          # manual_run_ios=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_ios == 'true'}}
+          manual_run_android=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_android == 'true'}}
+          echo "manual_run_android: $manual_run_android"
+          manual_run_ios=${{ github.event_name == 'workflow_dispatch' && inputs.should_run_ios == 'true'}}
+          echo "manual_run_ios: $manual_run_ios"
 
-          # android_app_path_empty=$(( -z "$(( inputs.browserstack_android_app_path ))" ))
-          # ios_app_path_empty=$(( -z "$(( inputs.browserstack_ios_app_path ))" ))
+          android_app_path_empty=$(( -z "$(( inputs.browserstack_android_app_path ))" ))
+
+          echo "android_app_path_empty: $android_app_path_empty"
+          ios_app_path_empty=$(( -z "$(( inputs.browserstack_ios_app_path ))" ))
+
+          echo "ios_app_path_empty: $ios_app_path_empty"
 
           # build_android=$((scheduled_changes || (manual_run_android && android_app_path_empty)))
           # build_ios=$((scheduled_changes || (manual_run_ios && ios_app_path_empty)))
