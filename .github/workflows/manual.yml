@@ -75,17 +75,17 @@ jobs:
       - name: Evaluate jobs to execute
         id: evaluate_jobs
         run: |
-          is_scheduled=${{ github.event_name == 'schedule' }}
-          changes_found=${{ needs.check-changes.outputs.should-run == 'true' }}
-          scheduled_changes=$(is_scheduled && changes_found)
+          is_scheduled="${{ github.event_name == 'schedule' }}"
+          changes_found="${{ needs.check-changes.outputs.should-run }}"
+          scheduled_changes=$((is_scheduled && changes_found == 'true'))
 
           echo "scheduled_changes: $scheduled_changes"
           
-          is_manual=${{ github.event_name == 'workflow_dispatch' }}
-          input_run_android=${{ inputs.should_run_android == 'true' }}
-          input_run_ios=${{ inputs.should_run_ios == 'true' }}
-          input_android_app_path=${{ inputs.browserstack_android_app_path }}
-          input_ios_app_path=${{ inputs.browserstack_ios_app_path }}
+          is_manual="${{ github.event_name == 'workflow_dispatch' }}"
+          input_run_android="${{ inputs.should_run_android == 'true' }}"
+          input_run_ios="${{ inputs.should_run_ios == 'true' }}"
+          input_android_app_path="${{ inputs.browserstack_android_app_path }}"
+          input_ios_app_path="${{ inputs.browserstack_ios_app_path }}"
           
           manual_run_android=$((is_manual && input_run_android))
           manual_run_ios=$((is_manual && input_run_ios))
