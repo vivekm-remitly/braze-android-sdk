@@ -121,7 +121,7 @@ jobs:
           echo "manual_run_ios: $manual_run_ios"
 
           build_android=$([[ $scheduled_changes == 'true' ]] || ([[ $manual_run_android == 'true' ]] && [[ $android_app_path_empty == 'true' ]])  && echo 'true' || echo 'false')
-          build_android=$([[ $scheduled_changes == 'true' ]] || ([[ $manual_run_ios == 'true' ]] && [[ $ios_app_path_empty == 'true' ]])  && echo 'true' || echo 'false')
+          build_ios=$([[ $scheduled_changes == 'true' ]] || ([[ $manual_run_ios == 'true' ]] && [[ $ios_app_path_empty == 'true' ]])  && echo 'true' || echo 'false')
 
           run_android=$([[ $scheduled_changes == 'true' ]] && [[ $manual_run_android == 'true' ]]  && echo 'true' || echo 'false')
           run_ios=$([[ $scheduled_changes == 'true' ]] && [[ $manual_run_ios == 'true' ]]  && echo 'true' || echo 'false')
